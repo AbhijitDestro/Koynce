@@ -1,0 +1,572 @@
+.heatmap-container {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  gap: 30px;
+}
+
+.header-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.header-content p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.controls {
+  display: flex;
+  gap: 30px;
+  align-items: flex-end;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timeframe-buttons {
+  display: flex;
+  gap: 4px;
+  background-color: var(--bg-secondary);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.timeframe-btn {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 50px;
+}
+
+.timeframe-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+}
+
+.timeframe-btn.active {
+  background-color: var(--accent);
+  color: white;
+}
+
+.sort-select {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  min-width: 140px;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 30px;
+  padding: 16px 20px;
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid;
+}
+
+.legend-color.positive {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.8) 0%, rgba(22, 163, 74, 0.9) 100%);
+  border-color: #22c55e;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.legend-color.negative {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.8) 0%, rgba(220, 38, 38, 0.9) 100%);
+  border-color: #ef4444;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.legend-color.neutral {
+  background-color: rgba(128, 128, 128, 0.3);
+  border-color: #808080;
+}
+
+.legend-note {
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.heatmap-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  min-height: 600px;
+  padding: 30px;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.heatmap-grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(99, 179, 237, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.crypto-bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+.crypto-bubble::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.crypto-bubble:hover::before {
+  opacity: 1;
+}
+
+.crypto-bubble:hover {
+  transform: scale(1.15) translateY(-5px);
+  z-index: 10;
+  filter: brightness(1.1);
+}
+
+.crypto-bubble:active {
+  transform: scale(1.05) translateY(-2px);
+}
+
+/* Floating animation for bubbles */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-3px) rotate(1deg); }
+  66% { transform: translateY(3px) rotate(-1deg); }
+}
+
+.crypto-bubble {
+  animation: float 6s ease-in-out infinite;
+}
+
+.crypto-bubble:nth-child(2n) {
+  animation-delay: -2s;
+}
+
+.crypto-bubble:nth-child(3n) {
+  animation-delay: -4s;
+}
+
+.crypto-bubble:nth-child(5n) {
+  animation-delay: -1s;
+}
+
+.crypto-bubble:nth-child(7n) {
+  animation-delay: -3s;
+}
+
+/* Pulse effect for high-change cryptos */
+.crypto-bubble.high-change {
+  animation: float 6s ease-in-out infinite, pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: var(--bubble-shadow); }
+  50% { 
+    box-shadow: var(--bubble-shadow), 0 0 20px rgba(255, 255, 255, 0.1);
+    filter: brightness(1.05);
+  }
+}
+
+/* Shimmer effect */
+.crypto-bubble::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 30%;
+  height: 30%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  border-radius: 50%;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.bubble-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.crypto-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-bottom: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.crypto-bubble:hover .crypto-icon {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.crypto-symbol {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 3px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.crypto-bubble:hover .crypto-symbol {
+  transform: scale(1.05);
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.crypto-change {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 6px;
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.crypto-bubble:hover .crypto-change {
+  background: rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+}
+
+.tooltip {
+  position: fixed;
+  top: 50%;
+  right: 30px;
+  transform: translateY(-50%);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 25px var(--shadow);
+  z-index: 1000;
+  min-width: 250px;
+  pointer-events: none;
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tooltip-header img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.tooltip-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.tooltip-header span {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.tooltip-row span:first-child {
+  color: var(--text-secondary);
+}
+
+.tooltip-row span:last-child {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tooltip-row .positive {
+  color: var(--success);
+}
+
+.tooltip-row .negative {
+  color: var(--danger);
+}
+
+.retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.retry-btn:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .heatmap-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+  
+  .controls {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .tooltip {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    left: 20px;
+    transform: none;
+    max-width: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .heatmap-container {
+    padding: 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+  }
+  
+  .heatmap-header {
+    margin-bottom: 20px;
+    padding: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .header-content {
+    text-align: center;
+  }
+  
+  .header-content h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  
+  .header-content p {
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+  
+  .controls {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .legend {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 0 16px 20px;
+    padding: 16px;
+  }
+  
+  .legend-item {
+    justify-content: center;
+  }
+  
+  .legend-note {
+    margin: 0;
+    text-align: center;
+  }
+  
+  .heatmap-grid {
+    gap: 8px;
+    padding: 16px;
+    margin: 0;
+  }
+  
+  .crypto-bubble {
+    min-width: 50px !important;
+    min-height: 50px !important;
+  }
+  
+  .crypto-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .crypto-symbol {
+    font-size: 0.7rem;
+  }
+  
+  .crypto-change {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heatmap-container {
+    padding: 0;
+  }
+  
+  .heatmap-header {
+    margin-bottom: 16px;
+    padding: 12px;
+  }
+  
+  .header-content h1 {
+    font-size: 1.75rem;
+    margin-bottom: 6px;
+  }
+  
+  .header-content p {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  
+  .controls {
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .control-group {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .timeframe-buttons {
+    justify-content: center;
+  }
+  
+  .timeframe-btn {
+    flex: 1;
+    min-width: auto;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+  
+  .legend {
+    margin: 0 12px 16px;
+    padding: 12px;
+  }
+  
+  .heatmap-grid {
+    padding: 12px;
+  }
+}
