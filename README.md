@@ -2,8 +2,6 @@
 
 A modern, responsive cryptocurrency tracking application built with React that provides real-time market data, interactive charts, and the latest crypto news.
 
-![KOYNCE Logo](public/logo.png)
-
 ## 🚀 Features
 
 ### 📊 **Real-time Market Data**
